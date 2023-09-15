@@ -21,7 +21,7 @@ export default ModalBtn
 const styles = StyleSheet.create({
   modalBtn: {
     flexGrow: 1,
-    paddingVertical: 10
+    paddingVertical: 18
   },
   modalBtnText: {
     textAlign: 'center'
