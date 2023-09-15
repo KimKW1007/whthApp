@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderBottomColor: `${theme.grey}35`,
     borderBottomWidth: 1,
-    paddingVertical: 10
+    paddingVertical: 15
   },
   modalDescription: {
     paddingVertical: 30,
@@ -54,11 +54,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: `${theme.grey}35`
   },
-  modalBtn: {
-    flexGrow: 1,
-    paddingVertical: 10
-  },
-  modalBtnText: {
-    textAlign: 'center'
-  }
 });
