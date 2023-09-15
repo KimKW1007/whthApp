@@ -31,6 +31,12 @@
         "projectId": "3f82b975-7737-4c40-ab9d-cd5ce165a143"
       }
     },
-    "owner": "kimkyeongwon"
+    "owner": "kimkyeongwon",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3f82b975-7737-4c40-ab9d-cd5ce165a143"
+    }
   }
 }
