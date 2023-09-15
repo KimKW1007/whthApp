@@ -36,7 +36,8 @@ const App = () => {
   const [detailId, setDetailId] = useState(-1);
   const [deleteId, setDeleteId] = useState(-1);
 
-  const onChangeText = (payload: string) => (currentId === -1 ? setText(payload) : setUpdateText(payload));
+  const onChangeText = (payload: string) => setText(payload);
+  const onChangeUpdateText =(payload: string) => setUpdateText(payload);
 
   const addToDo = async () => {
     if (text === '') {
@@ -131,7 +132,7 @@ const App = () => {
               {toDo.working === working ? (
                 <View style={styles.toDo}>
                   {currentId === Number(key) ? (
-                    <TextInput value={updateText} onChangeText={onChangeText} returnKeyType={'done'} style={styles.updateInput} autoFocus multiline />
+                    <TextInput value={updateText} onChangeText={onChangeUpdateText} returnKeyType={'done'} style={styles.updateInput} autoFocus multiline />
                   ) : (
                     <ToDoTextBox
                       isDetail={detailId === Number(key)}
