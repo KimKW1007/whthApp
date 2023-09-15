@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, TextInput, ScrollView, Alert } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, Dimensions } from 'react-native';
 import { theme } from './src/theme/theme';
 import { Fragment, useEffect, useState } from 'react';
 import Tabs from './src/Tabs';
 import ToDoTextBox from './src/ToDoTextBox';
 import UDBtnBox from './src/UDBtnBox';
+import CustomModal from './src/modal/CustomModal';
 
 const STORAGE_KEY = `@toDos`;
 const CURRENT_TAB = '@currentTab';
@@ -32,6 +33,8 @@ const App = () => {
   const [updateText, setUpdateText] = useState('');
 
   const [currentId, setCurrentId] = useState(-1);
+  const [detailId, setDetailId] = useState(-1);
+  const [deleteId, setDeleteId] = useState(-1);
 
   const onChangeText = (payload: string) => (currentId === -1 ? setText(payload) : setUpdateText(payload));
 
@@ -57,27 +60,26 @@ const App = () => {
   };
 
   const completedToDos = (id: string) => () => {
+    if (detailId === Number(id)) {
+      setDetailId(-1);
+    }
     const newToDos = { ...toDos };
     newToDos[id].completed = !newToDos[id].completed;
     setToDos(newToDos);
     saveToDos(newToDos);
   };
 
-  const deleteToDo = (id: string) => () => {
-    Alert.alert('Delete To Do?', 'Are you sure?', [
-      {
-        text: "I'm Sure",
-        onPress: () => {
-          const newToDos = { ...toDos };
-          delete newToDos[id];
-          setToDos(newToDos);
-          saveToDos(newToDos);
-        }
-      },
-      { text: 'Cancel' }
-    ]);
-    return;
+  const deleteToDo = () => {
+    const newToDos = { ...toDos };
+    delete newToDos[String(deleteId)];
+    setToDos(newToDos);
+    saveToDos(newToDos);
+    setDeleteId(-1);
   };
+
+  const deleteCancle =()=>{
+    setDeleteId(-1);
+  }
 
   const updateSetting = (id: string) => () => {
     const newToDos = { ...toDos };
@@ -91,6 +93,14 @@ const App = () => {
     await saveToDos(newToDos);
     setUpdateText('');
     setCurrentId(-1);
+  };
+
+  const handleDetailItem = (id: string) => () => {
+    if (detailId === Number(id)) {
+      setDetailId(-1);
+    } else {
+      setDetailId(Number(id));
+    }
   };
 
   useEffect(() => {
@@ -110,7 +120,7 @@ const App = () => {
         onChangeText={onChangeText}
         returnKeyType={'done'}
         style={styles.input}
-        placeholder={working ? 'Add a To Do' : 'Where do you want to go?'}
+        placeholder={working ? '할 일을 적으세요' : '가고싶은 곳을 적으세요'}
         placeholderTextColor={'#999'}
       />
       <ScrollView>
@@ -119,28 +129,31 @@ const App = () => {
           return (
             <Fragment key={key}>
               {toDo.working === working ? (
-                <>
+                <View style={styles.toDo}>
                   {currentId === Number(key) ? (
-                    <TextInput
-                      onSubmitEditing={updateToDo(key)}
-                      value={updateText}
-                      onChangeText={onChangeText}
-                      returnKeyType={'done'}
-                      style={styles.updateInput}
-                      autoFocus
-                    />
+                    <TextInput value={updateText} onChangeText={onChangeText} returnKeyType={'done'} style={styles.updateInput} autoFocus multiline />
                   ) : (
-                    <View style={styles.toDo}>
-                      <ToDoTextBox completed={toDo.completed} text={toDo.text} onPress={completedToDos(key)} />
-                      <UDBtnBox onPressDelete={deleteToDo(key)} onPressUpdate={updateSetting(key)} />
-                    </View>
+                    <ToDoTextBox
+                      isDetail={detailId === Number(key)}
+                      setDetailId={handleDetailItem(key)}
+                      completed={toDo.completed}
+                      text={toDo.text}
+                      onPress={completedToDos(key)}
+                    />
                   )}
-                </>
+                  <UDBtnBox
+                    isEdit={currentId === Number(key)}
+                    onPressUpdate={updateToDo(key)}
+                    onPressDelete={()=>setDeleteId(Number(key))}
+                    onPressUpdateSetting={updateSetting(key)}
+                  />
+                </View>
               ) : null}
             </Fragment>
           );
         })}
       </ScrollView>
+      {deleteId !== -1 ? <CustomModal deleteToDo={deleteToDo} deleteCancle={deleteCancle} /> : null}
     </View>
   );
 };
@@ -175,11 +188,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   updateInput: {
-    backgroundColor: '#fff',
-    marginBottom: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 15,
-    fontSize: 16
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+    width: '70%'
   }
 });
