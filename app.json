@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "WorkHardTravelHardApp",
-    "slug": "WorkHardTravelHardApp",
+    "slug": "whthapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3f82b975-7737-4c40-ab9d-cd5ce165a143"
+      }
+    },
+    "owner": "kimkyeongwon"
   }
 }
